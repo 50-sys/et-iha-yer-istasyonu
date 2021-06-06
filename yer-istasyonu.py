@@ -41,6 +41,7 @@ class MainWindow(QWidget):
         layout = QGridLayout()
         #layout.setColumnStretch(1, 2)
         layout.setColumnStretch(2, 8)
+        a = 10
 
         layout.addWidget(PyQt5.QtWidgets.QLabel("Paket Numarası: "), 0, 0)
         layout.addWidget(PyQt5.QtWidgets.QLabel("Görev Zamanı: "), 1, 0)
@@ -55,7 +56,7 @@ class MainWindow(QWidget):
         self.height_sensor = layout.addWidget(PyQt5.QtWidgets.QLabel("330 m"),2,1)
         self.pressure = layout.addWidget(PyQt5.QtWidgets.QLabel("202 Pa"),3,1)
         self.temperature =layout.addWidget(PyQt5.QtWidgets.QLabel("011 °C"),4,1)
-        self.voltage = layout.addWidget(PyQt5.QtWidgets.QLabel("10 V"),5,1)
+        self.voltage = layout.addWidget(PyQt5.QtWidgets.QLabel(str(a) + " V"),5,1)
         self.height_gps = layout.addWidget(PyQt5.QtWidgets.QLabel("10 m"),6,1)
 
         self.horizontalGroupBox.setLayout(layout)
@@ -68,7 +69,7 @@ class MainWindow(QWidget):
         # Setup a timer to trigger the redraw by calling update_plot.
         self.timer = QtCore.QTimer()
         self.timer.setInterval(1000)
-        self.timer.timeout.connect(self.update_plot)
+        self.timer.timeout.connect(self.update_plot)        
         self.timer.start()
 
 
@@ -77,7 +78,8 @@ class MainWindow(QWidget):
         for i in range(0,5): self.ydata[i] = self.ydata[i][1:] + [random.randint(0, 10)]
         self.canvas.axes1.cla()  # Clear the canvas.
         self.canvas.axes2.cla()
-        self.canvas.axes1.plot(self.xdata, self.ydata[0], 'r', label="Sıcaklık")
+        sıcaklık = sıcaklıkverisinial()
+        self.canvas.axes1.plot(self.xdata, sıcaklık, 'r', label="Sıcaklık")
         self.canvas.axes1.plot(self.xdata, self.ydata[1], 'b', label="Pil Gerilimi")
 
         self.canvas.axes2.plot(self.xdata, self.ydata[2], 'purple', label="Basınç")
