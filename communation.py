@@ -3,6 +3,7 @@
 """
 
 from helper import exception_handling
+import os  
 
 def connect_to_drone(): ## burda objeyi return et 
     ## linux ve windowsa göre ayrım yap
@@ -57,12 +58,14 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
 
 https://www.ardusub.com/developers/pymavlink.html 
 
-
+@exception_handling
 def switchFailSafe(): ## global drone belirt 
     pass
 
+@exception_handling
 def changeFlightMode(): ## global drone belirt 
     pass
 
+@exception_handling
 def arm_disarm(): ## global drone belirt 
     pass
