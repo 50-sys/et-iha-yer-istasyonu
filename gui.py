@@ -33,7 +33,7 @@ Açıklama eklenecek.
         self.axes2 = fig.add_subplot(122)
         super(MplCanvas, self).__init__(fig)
 
-class Window(QWidget):
+class Window(QWidget): ## varsayılan olarak sekmeler arası geçiş butonları, arm/disarm gibi şeyleri tutacak alttaki de değişcek şekilde ayarla
     """
 Uygulamanın ana penceresi.
     """

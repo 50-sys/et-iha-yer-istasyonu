@@ -4,10 +4,16 @@
 
 from helper import exception_handling
 
+def connect_to_drone(): ## burda objeyi return et
+    pass 
+
+drone = connect_to_drone()
 
 @exception_handling
 def getTelemetryData(*args):
-    
+
+    global drone 
+
     """
     getTelemetryData(*args)
 
@@ -51,11 +57,11 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
 https://www.ardusub.com/developers/pymavlink.html 
 
 
-def switchFailSafe():
+def switchFailSafe(): ## global drone belirt 
     pass
 
-def changeFlightMode():
+def changeFlightMode(): ## global drone belirt 
     pass
 
-def arm_disarm():
+def arm_disarm(): ## global drone belirt 
     pass
