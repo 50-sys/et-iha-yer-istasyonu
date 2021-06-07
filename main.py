@@ -1,3 +1,7 @@
+"""
+Ana modül.
+"""
+
 import sys
 from PyQt5 import QtWidgets
 from gui import Telemetry_Window

@@ -1,5 +1,9 @@
-from datetime import datetime
+"""
+Hata ayıklama gibi önemli yardımcı fonksiyonları tutan modül.
+"""
 
+from datetime import datetime
+import os, sys
 
 def saveLog(exception_name : str, folder_name : str = "logs"): ## log nasıl bir şey araştır, ona göre yaz
     pass
@@ -7,7 +11,18 @@ def saveLog(exception_name : str, folder_name : str = "logs"): ## log nasıl bir
 def exception_handling(func):
     
     """
-Decorator olarak kullanıldığı fonksiyonlarda bir hata oluşması durumunda log dosyasını project/logs yoluna kaydedip hatayı döndüren fonksiyon.
+Decorator olarak kullanıldığı fonksiyonlarda bir hata oluşması durumunda log dosyasını logs klasörüne kaydedip hatayı f formatında döndüren fonksiyon.
+
+f formatı:
+
+'''
+Hatanın olduğu dosya: 
+Hatanın olduğu fonksiyon: 
+Hata türü: 
+Hata metni: 
+Hatalı satır:
+Hatanın zamanı:   
+'''
     """
 
     def inner(*args, **kwargs):
@@ -16,9 +31,20 @@ Decorator olarak kullanıldığı fonksiyonlarda bir hata oluşması durumunda l
             func(*args, **kwargs)
 
         except Exception as e:
-            saveLog() ##netten log dosyası örneklerine bak
+            saveLog() ## netten log dosyası örneklerine bak
             
-            return f"{func.__name__} Fonksiyonunda HATA : {e}"
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            time = datetime.ctime(datetime.now())
+
+            return f"""
+Hatanın olduğu dosya     : {file_name}
+Hatanın olduğu fonksiyon : {func.__name__} 
+Hata türü                : {str(exc_type)[8 : -2]}
+Hata metni               : {e}
+Hatanın olduğu satır     : {exc_tb.tb_lineno}
+Hatanın zamanı           : {time}
+            """
 
     return inner
 

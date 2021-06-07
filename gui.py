@@ -1,3 +1,7 @@
+"""
+Uygulamanın arayüz öğelerini tutan modül.
+"""
+
 import sys
 import random
 import matplotlib
@@ -10,6 +14,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 from telemetry import getTelemetryData
+
+class Popup():
+    pass
+
 
 class MplCanvas(FigureCanvas):
 

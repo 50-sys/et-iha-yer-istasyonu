@@ -1,3 +1,7 @@
+"""
+Telemetri verilerini almaya ayarayan fonksiyonu tutan modül.
+"""
+
 from helper import exception_handling
 
 
