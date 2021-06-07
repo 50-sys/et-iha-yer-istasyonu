@@ -57,6 +57,12 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
 
 
 https://www.ardusub.com/developers/pymavlink.html 
+https://www.researchgate.net/publication/323683430_Communicating_with_Raspberry_Pi_via_MAVLink
+https://docs.px4.io/master/en/companion_computer/pixhawk_companion.html
+https://ardupilot.org/dev/docs/raspberry-pi-via-mavlink.html
+
+
+
 
 @exception_handling
 def switchFailSafe(): ## global drone belirt 
