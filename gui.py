@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QGroupBox, QGridLayout, QVBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
-from telemetry import getTelemetryData
+from communation import *
 
 class Popup():
     """
@@ -24,7 +24,7 @@ class Popup():
 
 class MplCanvas(FigureCanvas):
     """
-İstenildiğinde pencereye boş bir tuval.
+Açıklama eklenecek.
     """
 
     def __init__(self, parent=None, width=8, height=4, dpi=100):
@@ -34,6 +34,9 @@ class MplCanvas(FigureCanvas):
         super(MplCanvas, self).__init__(fig)
 
 class Window(QWidget):
+    """
+Uygulamanın ana penceresi.
+    """
 
     def __init__(self, *args, **kwargs):
 

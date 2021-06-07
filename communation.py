@@ -1,5 +1,5 @@
 """
-Telemetri verilerini almaya ayarayan fonksiyonu tutan modül.
+İHA ile iletişimi sağlayan araçları barındıran modül.
 """
 
 from helper import exception_handling
@@ -49,3 +49,13 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
 
 
 https://www.ardusub.com/developers/pymavlink.html 
+
+
+def switchFailSafe():
+    pass
+
+def changeFlightMode():
+    pass
+
+def arm_disarm():
+    pass
