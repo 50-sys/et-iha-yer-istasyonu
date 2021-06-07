@@ -4,7 +4,8 @@
 
 from helper import exception_handling
 
-def connect_to_drone(): ## burda objeyi return et
+def connect_to_drone(): ## burda objeyi return et 
+    ## linux ve windowsa göre ayrım yap
     pass 
 
 drone = connect_to_drone()
