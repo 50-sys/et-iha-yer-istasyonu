@@ -16,10 +16,16 @@ from matplotlib.figure import Figure
 from telemetry import getTelemetryData
 
 class Popup():
+    """
+İstendiğinde popup ekranını istenilen ögelerle bezeyip gösteren sınıf.     
+    """
     pass
 
 
 class MplCanvas(FigureCanvas):
+    """
+İstenildiğinde pencereye boş bir tuval.
+    """
 
     def __init__(self, parent=None, width=8, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
@@ -27,8 +33,22 @@ class MplCanvas(FigureCanvas):
         self.axes2 = fig.add_subplot(122)
         super(MplCanvas, self).__init__(fig)
 
+class Window(QWidget):
+
+    def __init__(self, *args, **kwargs):
+
+        super(Window, self).__init__(*args, **kwargs)
+        
+        self.title = "Eagle Tech Yer İstasyonu"
+
+        self.canvas = MplCanvas(self, width=5, height=4, dpi=100)
+
 
 class Telemetry_Window(QWidget):
+    """
+Telemetri verilerinin görüntülendiği ekran.
+    """
+
 
     def __init__(self, layout_code : int = 0, *args, **kwargs):
         
@@ -105,10 +125,12 @@ class Telemetry_Window(QWidget):
 
             data = getTelemetryData()
 
-            if type(data) == str: ## Error mesajını popup olarak vermeyi ekle ayrıca bisürü error mesajının dolmasını engellemek için o an ekranda başka popup olup olmadığına da bak
+            if type(data) == str: 
+            ## Error mesajını popup olarak vermeyi ekle ayrıca bisürü error mesajının dolmasını engellemek için o an ekranda başka popup olup olmadığına da bak
+            ## bisürü dosya ile dolmasını engellemek için logs dosyasının önlemler al, communciation lost, communucation şeylerinde bak bunlara
                 pass
 
-            # Drop off the first y element, append a new one.
+            
             
             ## BURDA da değişkenklerin değerlerini değiştir ve kontrol et değişken değiştiğinde labeldaki değer de değişir mi diye değişmiyorsa ekstra değişken olayını
             ## boşver, label.settext vs de bak
@@ -121,8 +143,8 @@ class Telemetry_Window(QWidget):
             self.canvas.axes2.plot(self.xdata, self.ydata[2], 'purple', label="Basınç")
             self.canvas.axes2.plot(self.xdata, self.ydata[3], 'orange', label="Yükseklik")
             
+            ## HER BAŞARILI TELEMETRY DE MİSSİON TİME A 1 SANİYE, PAKET NUMARASINA packet_per_signal EKLE
 
-            ## her başarılı denemede paket numarasını packet_per_signal değişkeni kadar arttır
             self.canvas.axes1.legend()
             self.canvas.axes2.legend()
 

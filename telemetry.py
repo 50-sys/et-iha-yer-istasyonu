@@ -28,7 +28,7 @@ Telemetri Verilerinin Kodları:
 
 Parametreler:
 
-args : Döndürülmesi talep edilen telemetri verilerin sırasıyla kodlarını tutan bir demet.
+args : Döndürülmesi talep edilen telemetri verilerin sırasıyla kodlarını tutan ve tüm elemanları integer veri tipinden olan bir demet.
 
 
 Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri verilerini tutan bir demet.
@@ -36,3 +36,16 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
 
     args = args or tuple(range(8)) ## Eğer argüman girilmemişse tüm değerleri sırasıyla döndürecek şekilde demet atıyoruz.
     
+    codes = {
+        0 : basıncınkodu,
+        1 : pilgerilimininkodu,
+        2 : sıcaklığınkodu,
+        3 : yüksekliğinkodu,
+        4 : gpsyüksekliğininkodu,
+        5 : enleminkodu,
+        6 : boylamınkodu,
+        7 : pusulaylaalakalıbirşeylerinkodu
+    }
+
+
+https://www.ardusub.com/developers/pymavlink.html 
