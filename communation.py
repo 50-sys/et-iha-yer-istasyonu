@@ -14,7 +14,9 @@ def connect_to_drone(connection_string : str): ## burda objeyi return et
     
     return drone
 
-drone = connect_to_drone()
+def disconnect_from_veichle():
+    pass    
+
 
 @exception_handling
 def get_telemetry_data(veichle, *args):

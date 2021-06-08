@@ -15,7 +15,26 @@ from matplotlib.figure import Figure
 
 from communation import *
 
-drone = None  
+veichle = None  
+
+def connect_to_veichle_gui(connectipn_string : str):
+    pass
+
+def disconnect_from_veichle_gui():
+    pass
+
+def switchFailSafe_gui(): ## global drone belirt 
+    pass
+
+
+def changeFlightMode_gui(): ## global drone belirt 
+    pass
+
+
+def arm_disarm_gui(): ## global drone belirt 
+    pass
+
+
 
 class Popup():
     """
@@ -55,8 +74,8 @@ Telemetri verilerinin görüntülendiği ekran.
     """
 
 
-    def __init__(self, layout_code : int = 0, *args, **kwargs):
-        
+    def __init__(self, *args, **kwargs):
+
         super(Telemetry_Window, self).__init__(*args, **kwargs)
 
         self.title = "Eagle Tech Yer İstasyonu"
@@ -64,16 +83,14 @@ Telemetri verilerinin görüntülendiği ekran.
         self.canvas = MplCanvas(self, width=5, height=4, dpi=100)
         #self.setCentralWidget(self.canvas)
 
-        self.default_layout_code = layout_code
-
         self.set_layout()
 
-    def set_layout(self, layout_code : int = None):
 
+    def set_layout(self):
+        
+        global veichle
 
-        layout_code = layout_code or self.default_layout_code
-
-        if layout_code == 0:
+        if veichle is not None:
 
             n_data = 50
             self.xdata = list(range(n_data))
@@ -120,15 +137,19 @@ Telemetri verilerinin görüntülendiği ekran.
             self.timer.timeout.connect(self.update_data)
             self.timer.start()
 
+        else: ## BURAYA CİHAZ BAĞLANMADI YAZISI EKLENECEK
+            
+            pass 
 
     def update_data(self, layout_code : int = None):
 
+        global veichle
 
         layout_code = layout_code or self.default_layout_code
 
         if layout_code == 0:
 
-            data = get_telemetry_data()
+            data = get_telemetry_data(veichle)
 
             if type(data) == str: 
             ## Error mesajını popup olarak vermeyi ekle ayrıca bisürü error mesajının dolmasını engellemek için o an ekranda başka popup olup olmadığına da bak
