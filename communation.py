@@ -4,15 +4,20 @@
 
 from helper import exception_handling
 import os  
+from pymavlink.dialects.v10 import ardupilotmega as mavlink1
+from pymavlink import mavutil
 
-def connect_to_drone(): ## burda objeyi return et 
+@exception_handling
+def connect_to_drone(connection_string : str): ## burda objeyi return et 
     ## linux ve windowsa göre ayrım yap
-    pass 
+    drone = mavutil.mavlink_connection(connection_string)
+    
+    return drone
 
 drone = connect_to_drone()
 
 @exception_handling
-def getTelemetryData(*args):
+def get_telemetry_data(veichle, *args):
 
     global drone 
 
@@ -36,6 +41,7 @@ Telemetri Verilerinin Kodları:
 
 Parametreler:
 
+veichle : Telemetri verisi alınacak araç. 
 args : Döndürülmesi talep edilen telemetri verilerin sırasıyla kodlarını tutan ve tüm elemanları integer veri tipinden olan bir demet.
 
 
@@ -44,6 +50,10 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
 
     args = args or tuple(range(8)) ## Eğer argüman girilmemişse tüm değerleri sırasıyla döndürecek şekilde demet atıyoruz.
     
+    if len(set(args).intersection(set(range(8)))) != len(args):
+        raise Exception("Geçersiz veri girişi.")
+
+
     codes = {
         0 : basıncınkodu,
         1 : pilgerilimininkodu,
@@ -55,6 +65,20 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
         7 : pusulaylaalakalıbirşeylerinkodu
     }
 
+    results = []
+
+    for i in args:
+
+        data = veichle.messages[codes[i]].alt
+
+        if not data:
+            
+            raise Exception("Veri alınamadı veya yanlış.")
+    
+        results.append(data)
+        
+
+    return tuple(results)
 
 https://www.ardusub.com/developers/pymavlink.html 
 https://www.researchgate.net/publication/323683430_Communicating_with_Raspberry_Pi_via_MAVLink

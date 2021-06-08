@@ -15,6 +15,8 @@ from matplotlib.figure import Figure
 
 from communation import *
 
+drone = None  
+
 class Popup():
     """
 İstendiğinde popup ekranını istenilen ögelerle bezeyip gösteren sınıf.     
@@ -126,7 +128,7 @@ Telemetri verilerinin görüntülendiği ekran.
 
         if layout_code == 0:
 
-            data = getTelemetryData()
+            data = get_telemetry_data()
 
             if type(data) == str: 
             ## Error mesajını popup olarak vermeyi ekle ayrıca bisürü error mesajının dolmasını engellemek için o an ekranda başka popup olup olmadığına da bak
