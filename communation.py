@@ -8,14 +8,15 @@ from pymavlink.dialects.v10 import ardupilotmega as mavlink1
 from pymavlink import mavutil
 
 @exception_handling
-def connect_to_drone(connection_string : str): ## burda objeyi return et 
-    ## linux ve windowsa göre ayrım yap
-    drone = mavutil.mavlink_connection(connection_string)
+def connect_to_veichle(connection_string : str):
+
+    veichle = mavutil.mavlink_connection(connection_string)
     
-    return drone
+    return veichle
 
 def disconnect_from_veichle():
-    pass    
+
+    return None
 
 
 @exception_handling
@@ -91,13 +92,13 @@ https://ardupilot.org/dev/docs/raspberry-pi-via-mavlink.html
 
 
 @exception_handling
-def switchFailSafe(): ## global drone belirt 
+def switchFailSafe(veichle): ## global drone belirt 
     pass
 
 @exception_handling
-def changeFlightMode(): ## global drone belirt 
+def changeFlightMode(veichle): ## global drone belirt 
     pass
 
 @exception_handling
-def arm_disarm(): ## global drone belirt 
+def arm_disarm(veichle): ## global drone belirt 
     pass

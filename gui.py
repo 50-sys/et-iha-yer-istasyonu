@@ -18,29 +18,55 @@ from communation import *
 veichle = None  
 
 def connect_to_veichle_gui(connectipn_string : str):
-    pass
+    
+    if hata var:
+        pass
 
 def disconnect_from_veichle_gui():
-    pass
+    
+    if hata var:
+        pass
 
-def switchFailSafe_gui(): ## global drone belirt 
-    pass
+def switchFailSafe_gui(veichle): 
+    
+    if veichle is not None:
+        
+        if hata var:
+            pass
+
+    else:
+        pass
 
 
-def changeFlightMode_gui(): ## global drone belirt 
-    pass
+def changeFlightMode_gui(veichle):
+    
+    if veichle is not None:
+        
+        if hata var:
+            pass
+
+    else:
+        pass
 
 
-def arm_disarm_gui(): ## global drone belirt 
-    pass
+def arm_disarm_gui(veichle):
+    
+    if veichle is not None:
+        
+        if hata var:
+            pass
+
+    else:
+        pass
 
 
 
-class Popup():
-    """
-İstendiğinde popup ekranını istenilen ögelerle bezeyip gösteren sınıf.     
-    """
-    pass
+
+# class Popup():
+#     """
+# İstendiğinde popup ekranını istenilen ögelerle bezeyip gösteren sınıf.     
+#     """
+#     pass
 
 
 class MplCanvas(FigureCanvas):
@@ -185,4 +211,7 @@ Telemetri verilerinin görüntülendiği ekran.
             # Trigger the canvas to update and redraw.
             self.canvas.draw()
 
+
+class Map_Window(QWidget):
+    pass
 
