@@ -7,51 +7,94 @@ import random
 import matplotlib
 matplotlib.use('Qt5Agg')
 
+
 import PyQt5
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QGroupBox, QGridLayout, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QGroupBox, QGridLayout, QVBoxLayout, QWidget, QInputDialog, QMessageBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
+from time import time
+
 from communation import *
 
-veichle = None  
+vehicle = None  
 
-def connect_to_veichle_gui(connectipn_string : str):
+def connect_to_vehicle_gui(window):
     
-    if hata var:
-        pass
+    global vehicle
 
-def disconnect_from_veichle_gui():
-    
-    if hata var:
-        pass
+    o_s = sys.platform
 
-def switchFailSafe_gui(veichle): 
-    
-    if veichle is not None:
+   
+    if "linux" in o_s:
+
         
-        if hata var:
+        port, flag = QInputDialog.getText(window, 'input dialog', 'Hangi usb portu?')
+
+        port = not flag or "/dev/ttyUSB" + str(port)
+
+    elif o_s == "win32":
+
+        port, flag = QInputDialog.getText(window, 'input dialog', 'Hangi com portu?')
+
+        port = not flag or "com" + str(port)
+
+
+
+    else:
+
+        return 1 
+
+
+    if not flag:
+        
+        return 0
+
+    vehicle = connect_to_vehicle(str(port))
+
+
+    if "Hata" in vehicle: ## exception handling sıkıntı verirse
+        
+        popup = QMessageBox()
+        popup.setText("Araca bağlanılamadı.")
+        popup.setInformativeText(vehicle)
+        popup.setTitle("HATA")
+        popup.setIcon("Warning")
+        ret = popup.exec_()
+
+    vehicle = vehicle
+
+def disconnect_from_vehicle_gui():
+    
+    if hata var: ## exception handling sıkıntı verirse
+        pass
+
+def switchFailSafe_gui(vehicle): 
+    
+    if vehicle is not None:
+        
+        if hata var: ## exception handling sıkıntı verirse
             pass
 
     else:
         pass
 
 
-def changeFlightMode_gui(veichle):
+def changeFlightMode_gui(vehicle):
     
-    if veichle is not None:
+    if vehicle is not None:
         
-        if hata var:
+        if hata var: ## exception handling sıkıntı verirse
             pass
 
     else:
         pass
 
 
-def arm_disarm_gui(veichle):
+def arm_disarm_gui(vehicle):
     
-    if veichle is not None:
+    if vehicle is not None: ## exception handling sıkıntı verirse
         
         if hata var:
             pass
@@ -114,9 +157,9 @@ Telemetri verilerinin görüntülendiği ekran.
 
     def set_layout(self):
         
-        global veichle
+        global vehicle
 
-        if veichle is not None:
+        if vehicle is not None:
 
             n_data = 50
             self.xdata = list(range(n_data))
@@ -158,24 +201,52 @@ Telemetri verilerinin görüntülendiği ekran.
             self.setLayout(windowLayout)
             self.show()
             # Setup a timer to trigger the redraw by calling update_plot.
-            self.timer = QtCore.QTimer()
-            self.timer.setInterval(1000)
-            self.timer.timeout.connect(self.update_data)
-            self.timer.start()
+            self.data_timer = QtCore.QTimer()
+            self.data_timer.setInterval(1000)
+            self.data_timer.timeout.connect(self.update_data)
+            self.data_timer.start()
+
+            self.heartbeat_timer = QtCore.QTimer()
+            self.heartbeat_timer.setInterval(1000)
+            self.heartbeat_timer.timeout.connect(Telemetry_Window.check_heartbeat)
+            self.heartbeat_timer.start()
+
 
         else: ## BURAYA CİHAZ BAĞLANMADI YAZISI EKLENECEK
             
             pass 
 
+    @classmethod
+    def check_heartbeat(cls):
+
+        global vehicle
+
+        heartbeat = None
+
+        tm = time()
+
+        while  time() - tm <= 5:
+            
+            heartbeat = vehicle.rcv_msg()
+        
+        if heartbeat is None:
+            
+            vehicle = None 
+
     def update_data(self, layout_code : int = None):
 
-        global veichle
+        """
+Her belli zaman aralığında ekrandaki telemetri verilerini güncellemek için kullanılan fonksyion.
+Şu anda her 1 saniyede bir kez çağrılıyor.
+        """
+
+        global vehicle
 
         layout_code = layout_code or self.default_layout_code
 
         if layout_code == 0:
 
-            data = get_telemetry_data(veichle)
+            data = get_telemetry_data(vehicle)
 
             if type(data) == str: 
             ## Error mesajını popup olarak vermeyi ekle ayrıca bisürü error mesajının dolmasını engellemek için o an ekranda başka popup olup olmadığına da bak

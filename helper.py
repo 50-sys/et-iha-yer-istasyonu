@@ -31,20 +31,25 @@ Hatanın zamanı:
             func(*args, **kwargs)
 
         except Exception as e:
-            saveLog() ## netten log dosyası örneklerine bak
+            
             
             exc_type, exc_obj, exc_tb = sys.exc_info()
             file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             time = datetime.ctime(datetime.now())
 
-            return f"""
+            error_msg = f"""
 Hatanın olduğu dosya     : {file_name}
 Hatanın olduğu fonksiyon : {func.__name__} 
 Hata türü                : {str(exc_type)[8 : -2]}
 Hata metni               : {e}
 Hatanın olduğu satır     : {exc_tb.tb_lineno}
-Hatanın zamanı           : {time}
+Hatanın zamanı           : {time} \n\n
             """
+
+
+            saveLog() ## netten log dosyası örneklerine bak
+
+            return error_msg 
 
     return inner
 
