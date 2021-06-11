@@ -10,18 +10,30 @@ matplotlib.use('Qt5Agg')
 
 import PyQt5
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QGroupBox, QGridLayout, QVBoxLayout, QWidget, QInputDialog, QMessageBox
+from PyQt5.QtWidgets import QGroupBox, QGridLayout, QVBoxLayout, QWidget, QInputDialog, QMessageBox, QPushButton
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-
+from helper import *
 from time import time
 
 from communation import *
 
 vehicle = None  
 
-def connect_to_vehicle_gui(window):
-    
+
+
+
+def connect_to_vehicle_gui(window, button):
+
+    """
+Mavlink protokolü ile araca bağlanılmasını sağlayan fonksiyonun arayüze uygulanması.
+
+Parametreler:
+
+window : Bağlanma penceresinin gösterileceği pencere.
+button : Bağlan butonu.
+    """
+
     global vehicle
 
     o_s = sys.platform
@@ -41,8 +53,7 @@ def connect_to_vehicle_gui(window):
         port = not flag or "com" + str(port)
 
 
-
-    else:
+    else:   
 
         return 1 
 
@@ -53,22 +64,38 @@ def connect_to_vehicle_gui(window):
 
     vehicle = connect_to_vehicle(str(port))
 
+    
 
     if "Hata" in vehicle: ## exception handling sıkıntı verirse
         
-        popup = QMessageBox()
-        popup.setText("Araca bağlanılamadı.")
-        popup.setInformativeText(vehicle)
-        popup.setTitle("HATA")
-        popup.setIcon("Warning")
-        ret = popup.exec_()
+        error_popup("Araca bağlanılamadı.", vehicle)
 
-    vehicle = vehicle
+        return 1
 
-def disconnect_from_vehicle_gui():
+
+
+
+    button.setText("Bağlantıyı Kes")
+
+def disconnect_from_vehicle_gui(button):
+
+    """
+Mavlink protokolü ile araç bağlantısının kesilmesini sağlayan fonksiyonun arayüze uygulanması.
+
+Parametreler:
+
+button : Bağlan butonu.
+    """
     
-    if hata var: ## exception handling sıkıntı verirse
-        pass
+    veichle = disconnect_from_vehicle()
+
+    if "Hata" in veichle: ## exception handling sıkıntı verirse
+
+        error_popup("Bağlantı kesilirken bir sorun oluştu.", vehicle)
+
+        return 1
+
+    button.setText("Bağlan")
 
 def switchFailSafe_gui(vehicle): 
     
@@ -81,7 +108,7 @@ def switchFailSafe_gui(vehicle):
         pass
 
 
-def changeFlightMode_gui(vehicle):
+def changeFlightMode_gui(vehicle, mode : str):
     
     if vehicle is not None:
         
@@ -104,14 +131,6 @@ def arm_disarm_gui(vehicle):
 
 
 
-
-# class Popup():
-#     """
-# İstendiğinde popup ekranını istenilen ögelerle bezeyip gösteren sınıf.     
-#     """
-#     pass
-
-
 class MplCanvas(FigureCanvas):
     """
 Açıklama eklenecek.
@@ -122,6 +141,7 @@ Açıklama eklenecek.
         self.axes1 = fig.add_subplot(121)
         self.axes2 = fig.add_subplot(122)
         super(MplCanvas, self).__init__(fig)
+
 
 class Window(QWidget): ## varsayılan olarak sekmeler arası geçiş butonları, arm/disarm gibi şeyleri tutacak alttaki de değişcek şekilde ayarla
     """
@@ -151,6 +171,19 @@ Telemetri verilerinin görüntülendiği ekran.
 
         self.canvas = MplCanvas(self, width=5, height=4, dpi=100)
         #self.setCentralWidget(self.canvas)
+
+        self.filters = list(range(7)) ## Gösterilmesi istenen öğeler
+
+        self.data_correspondings = {
+                    
+            0 : "Basınç",
+            1 : "Pil Gerilimi",
+            2 : "Sıcaklık",
+            3 : "Yükseklik",
+            4 : "GPS Yüksekliği",
+            5 : "Enlem",
+            6 : "Boylam"
+        }
 
         self.set_layout()
 
@@ -225,15 +258,19 @@ Telemetri verilerinin görüntülendiği ekran.
 
         tm = time()
 
+        results = []
+
         while  time() - tm <= 5:
             
             heartbeat = vehicle.rcv_msg()
         
-        if heartbeat is None:
+            results.append(heartbeat)
+
+        if len(tuple(filter(lambda a : a is not None, results))) <= len(results) * (1/10): ## to control if connection is lost
             
             vehicle = None 
 
-    def update_data(self, layout_code : int = None):
+    def update_data(self):
 
         """
 Her belli zaman aralığında ekrandaki telemetri verilerini güncellemek için kullanılan fonksyion.
@@ -242,16 +279,17 @@ Her belli zaman aralığında ekrandaki telemetri verilerini güncellemek için 
 
         global vehicle
 
-        layout_code = layout_code or self.default_layout_code
 
-        if layout_code == 0:
+
+        if 1:
 
             data = get_telemetry_data(vehicle)
 
-            if type(data) == str: 
-            ## Error mesajını popup olarak vermeyi ekle ayrıca bisürü error mesajının dolmasını engellemek için o an ekranda başka popup olup olmadığına da bak
-            ## bisürü dosya ile dolmasını engellemek için logs dosyasının önlemler al, communciation lost, communucation şeylerinde bak bunlara
-                pass
+            if type(data) == str: ## hata olmuşsa
+                
+                error_popup("Telemetri Verisi Alınamadı", data)
+                
+                return 1
 
             
             
@@ -271,13 +309,15 @@ Her belli zaman aralığında ekrandaki telemetri verilerini güncellemek için 
             self.canvas.axes1.legend()
             self.canvas.axes2.legend()
 
-            self.canvas.axes1.set_title("Telemetri Verileri")
+            self.canvas.axes1.set_title("Telemetri Verileri - 1")
             self.canvas.axes1.set_xlabel("Zaman (saniye)")
             self.canvas.axes1.set_ylabel("Değer")
 
-            self.canvas.axes2.set_title("Telemetri Verileri")
+            self.canvas.axes2.set_title("Telemetri Verileri - 2")
             self.canvas.axes2.set_xlabel("Zaman (saniye)")
             self.canvas.axes2.set_ylabel("Değer")
+
+            ## diğer veriler için de yap
 
             # Trigger the canvas to update and redraw.
             self.canvas.draw()

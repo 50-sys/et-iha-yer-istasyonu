@@ -3,10 +3,12 @@ Hata ayıklama gibi önemli yardımcı fonksiyonları tutan modül.
 """
 
 from datetime import datetime
+from PyQt5.QtWidgets import QMessageBox
 import os, sys
 
 def saveLog(exception_name : str, folder_name : str = "logs"): ## log nasıl bir şey araştır, ona göre yaz
     pass
+    return file_name
 
 def exception_handling(func):
     
@@ -22,12 +24,14 @@ Hata türü:
 Hata metni: 
 Hatalı satır:
 Hatanın zamanı:   
+Hata bilgilerinin kaydedildiği dosya: 
 '''
     """
 
     def inner(*args, **kwargs):
 
         try:
+            
             func(*args, **kwargs)
 
         except Exception as e:
@@ -47,9 +51,18 @@ Hatanın zamanı           : {time} \n\n
             """
 
 
-            saveLog() ## netten log dosyası örneklerine bak
+            file_name = saveLog(error_msg) 
 
-            return error_msg 
+            return error_msg + f"\nLog Dosyası : {file_name}"
 
     return inner
 
+def error_popup(error : str, detailed_description : str):
+
+    popup = QMessageBox()
+    popup.setText(error)
+    popup.setInformativeText(detailed_description)
+    popup.setTitle("HATA")
+    popup.setIcon("Warning")
+    
+    ret = popup.exec_()

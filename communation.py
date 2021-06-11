@@ -41,7 +41,6 @@ Telemetri Verilerinin Kodları:
 4 : YÜKSEKLİK (GPS)
 5 : ENLEM
 6 : BOYLAM
-7 : PUSULAYLA ALAKALI BİR ŞEYLER
 
 
 Parametreler:
@@ -66,8 +65,7 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
         3 : yüksekliğinkodu,
         4 : gpsyüksekliğininkodu,
         5 : enleminkodu,
-        6 : boylamınkodu,
-        7 : pusulaylaalakalıbirşeylerinkodu
+        6 : boylamınkodu
     }
 
     results = []
@@ -99,7 +97,7 @@ def switch_fail_safe(vehicle): ## global drone belirt
     pass
 
 @exception_handling
-def change_flight_mode(vehicle): ## global drone belirt 
+def change_flight_mode(vehicle, mode : str): ## global drone belirt 
     pass
 
 @exception_handling
