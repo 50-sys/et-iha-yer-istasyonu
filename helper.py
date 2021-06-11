@@ -125,10 +125,11 @@ Parametreler:
 iterator : verileri depolayan konteyner
 limit : iterator değişkeninin tutabileceği maksimum eleman sayısı
 start_blank : true verilirse iteratordeki boş yerler None ile doldurulur
+none_item : boşlukların doldurulacağı nesne
 
     """
     
-    def __init__(self, limit : int, start_blank : bool, iterator = list()):
+    def __init__(self, limit : int, start_blank : bool, iterator = list(), none_item = None):
             
         if start_blank:
                 
@@ -136,15 +137,15 @@ start_blank : true verilirse iteratordeki boş yerler None ile doldurulur
 
         if len(self.iterator) == 0:
 
-            self.iterator = [None for x in range(limit)]
+            self.iterator = [none_item for x in range(limit)]
 
         else:
 
-                self.iterator = list(iterator) + [None for x in range(limit - len(iterator))]
+                self.iterator = list(iterator) + [none_item for x in range(limit - len(iterator))]
 
 
         self.limit = limit
-
+        self.none_item = none_item
 
     def __iter__(self):
 
@@ -182,6 +183,6 @@ start_blank : true verilirse iteratordeki boş yerler None ile doldurulur
 
         self.iterator.remove(item)
         
-        self.iterator.append(0)
+        self.iterator.append(self.none_item)
 
 

@@ -171,6 +171,7 @@ BUTONLARI AYARLARKEN örn FLİGHTMODE DEĞİŞTİR {vehicle.flightmode} gibi isi
 
 
 class Telemetry_Window(QWidget):
+    
     """
 Telemetri verilerinin görüntülendiği ekran.
     """
