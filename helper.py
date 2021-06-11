@@ -6,9 +6,57 @@ from datetime import datetime
 from PyQt5.QtWidgets import QMessageBox
 import os, sys
 
-def saveLog(exception_name : str, folder_name : str = "logs"): ## log nasıl bir şey araştır, ona göre yaz
-    pass
-    return file_name
+def exception_handling():
+    pass   
+
+def is_int(string : str):
+
+    """
+Verilen stringin sayı olup olmadığını kontrol eden fonksiyon.
+    """
+
+    try:
+    
+        int(string)
+
+        return True
+
+    except:
+
+        return False
+
+@exception_handling
+def saveLog(exception : str, folder_name : str = "logs"): ## log nasıl bir şey araştır, ona göre yaz
+    
+    o_s = sys.platform
+
+
+    if "linux" in o_s:
+
+        path = os.getcwd() + "/" + folder_name
+
+
+    elif o_s == "win32":
+
+        path = os.getcwd() + "\\" + folder_name
+
+    else:
+
+        raise Exception("OS not supported!")
+
+    max_log = int(max(filter(lambda a : a[-4 : ] == ".log" and is_int(a[-4 : ]), path.listdir()), key = lambda a : a[: -4])) ## yoldaki maksimum numaralı log dosyasının adı 
+
+    file_name = str(max_log + 1) + ".log"
+
+    path += file_name
+
+    with open(path) as file:
+
+        file.write(exception)
+
+
+
+    return path
 
 def exception_handling(func):
     
@@ -24,7 +72,7 @@ Hata türü:
 Hata metni: 
 Hatalı satır:
 Hatanın zamanı:   
-Hata bilgilerinin kaydedildiği dosya: 
+Hata bilgilerinin kaydedildiği dosyanın yolu: 
 '''
     """
 
@@ -51,9 +99,9 @@ Hatanın zamanı           : {time} \n\n
             """
 
 
-            file_name = saveLog(error_msg) 
+            path = saveLog(error_msg) 
 
-            return error_msg + f"\nLog Dosyası : {file_name}"
+            return error_msg + f"\nLog Dosyası Yolu : {path}"
 
     return inner
 
@@ -64,5 +112,76 @@ def error_popup(error : str, detailed_description : str):
     popup.setInformativeText(detailed_description)
     popup.setTitle("HATA")
     popup.setIcon("Warning")
-    
+
     ret = popup.exec_()
+
+class Limited_List:
+
+    """ 
+Eleman sayısı belli bir limiti geçmeyen özel bir liste.
+
+Parametreler:
+
+iterator : verileri depolayan konteyner
+limit : iterator değişkeninin tutabileceği maksimum eleman sayısı
+start_blank : true verilirse iteratordeki boş yerler None ile doldurulur
+
+    """
+    
+    def __init__(self, limit : int, start_blank : bool, iterator = list()):
+            
+        if start_blank:
+                
+            self.iterator = list(iterator)
+
+        if len(self.iterator) == 0:
+
+            self.iterator = [None for x in range(limit)]
+
+        else:
+
+                self.iterator = list(iterator) + [None for x in range(limit - len(iterator))]
+
+
+        self.limit = limit
+
+
+    def __iter__(self):
+
+        self.current = 0
+
+        return self
+
+    def __len__(self):
+
+        return len(self.iterator)
+
+    def __next__(self):
+
+        if self.current <= len(self):
+
+            raise StopIteration()
+
+        self.current += 1
+        
+        
+
+        return self.container[self.current - 1]
+
+    
+    def __getitem__(self, index : int):
+        
+        return self.container[index]
+
+    
+    def add(self, item):
+
+        self.iterator = [item] + self.iterator[1:]
+
+    def remove(self, item):
+
+        self.iterator.remove(item)
+        
+        self.iterator.append(0)
+
+

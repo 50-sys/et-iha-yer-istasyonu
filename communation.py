@@ -7,6 +7,14 @@ import os
 from pymavlink.dialects.v10 import ardupilotmega as mavlink1
 from pymavlink import mavutil
 
+class Vehicle:
+
+    def __init__(self, vehicle, fligt_mode : str, is_armed : bool):
+
+        self.vehicle = vehicle   
+        self.fligt_mode = fligt_mode
+        self.is_armed = is_armed
+
 @exception_handling
 def connect_to_vehicle(connection_string : str):
 
@@ -14,7 +22,7 @@ def connect_to_vehicle(connection_string : str):
     
     vehicle.wait_heartbeat()
     
-    return vehicle
+    return Vehicle(vehicle, "", 0)
 
 def disconnect_from_vehicle():
 
