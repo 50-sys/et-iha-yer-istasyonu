@@ -126,10 +126,11 @@ iterator : verileri depolayan konteyner
 limit : iterator değişkeninin tutabileceği maksimum eleman sayısı
 start_blank : true verilirse iteratordeki boş yerler None ile doldurulur
 none_item : boşlukların doldurulacağı nesne
+lean_to_left : true verilirse none_item olmayan değerleri sola yaslar
 
     """
     
-    def __init__(self, limit : int, start_blank : bool, iterator = list(), none_item = None):
+    def __init__(self, limit : int, start_blank : bool, iterator = list(), none_item = None, lean_to_left = False):
             
         if start_blank:
                 
@@ -140,12 +141,17 @@ none_item : boşlukların doldurulacağı nesne
             self.iterator = [none_item for x in range(limit)]
 
         else:
+                if lean_to_left:
+
+                    self.iterator = [none_item for x in range(limit - len(iterator))] + list(iterator)
+
 
                 self.iterator = list(iterator) + [none_item for x in range(limit - len(iterator))]
 
 
         self.limit = limit
         self.none_item = none_item
+        self.lean_to_left = lean_to_left
 
     def __iter__(self):
 
@@ -183,6 +189,10 @@ none_item : boşlukların doldurulacağı nesne
 
         self.iterator.remove(item)
         
+        if self.lean_to_left:
+            
+            self.iterator = [self.none_item] + self.iterator
+
         self.iterator.append(self.none_item)
 
 

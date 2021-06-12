@@ -1,3 +1,4 @@
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QLabel, QGridLayout, QPushButton, QWidget
 from PyQt5 import QtWidgets
 import sys
@@ -28,17 +29,27 @@ class app():
         layout.addWidget(c, 0, 1)
 
         layout1 = QGridLayout()
-        b = QLabel("kfdgkng")
-        layout1.addWidget(b, 0, 1)
         
+        b = QLabel("kfdgkng")
+        layout.addWidget(b, 0, 2)
+
+        o = QLabel("lkfdlkfsdfd")
+        o.setFont(QFont("Arial", 100))
+        layout.addWidget(o, 1, 0)
+
         button = QPushButton("dfjn")
 
         button.clicked.connect(lambda  : self.d(layout1))
         
-        layout.addWidget(button, 0, 2)
+        layout.addWidget(button, 0, 3)
         
         
         self.layout = layout
+
+        
+        print(self.layout.itemAt(1).widget())
+
+        print(o, b, c, button, button)
 
     def d(self, layout):
         self.layout = layout
@@ -49,6 +60,7 @@ class ap(QWidget):
 
        super(ap, self).__init__()
        self.setWindowTitle("jd")
+       print(help(self.setGeometry))
 
        layout = app().layout
        self.setLayout(layout)

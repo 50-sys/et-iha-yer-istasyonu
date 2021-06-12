@@ -7,8 +7,9 @@ from time import time
 from helper import *
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from PyQt5.QtWidgets import QGroupBox, QGridLayout, QVBoxLayout, QWidget, QInputDialog, QMessageBox, QPushButton
+from PyQt5.QtWidgets import QGroupBox, QGridLayout, QLabel, QVBoxLayout, QWidget, QInputDialog, QMessageBox, QPushButton
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtGui import QFont
 import PyQt5
 import sys
 import random
@@ -43,6 +44,9 @@ Uygulamanın ana penceresi.
         super(Window, self).__init__(*args, **kwargs)
 
         self.title = "Eagle Tech Yer İstasyonu"
+
+        self.setGeometry(10, 10, 1600, 900)
+
 
         self.canvas = MplCanvas(self, width=5, height=4, dpi=100)
 
@@ -200,8 +204,8 @@ Telemetri verilerinin görüntülendiği ekran.
         self.data_count = 9 ## count of telemetry data 
 
         self.canvas = MplCanvas(self, width=5, height=4, dpi=100)
-        # self.setCentralWidget(self.canvas)
 
+        ## load filters
         try:
 
             
@@ -217,15 +221,16 @@ Telemetri verilerinin görüntülendiği ekran.
                 
             filters = list(range(self.data_count))
 
-
+        ## tüm telemetri verilerinin kodları ve ayrıntılarını depolayan sözlük:
+        ## class mantığında çalışıyor
         ## demetin ilk elemanı değişkenin değeri, ikincisi ekranda gösterilecek ad, üçüncüsü de gui da konumu
-        # KONUMDA : (x, y) = x row, y column. ("g", x, y) = "g" = grafik, x grafik numarası, y eksen numarası.
+        ## KONUMDA : (x, y) = x row, y column. ("g", x, y) = "g" = grafik, x grafik numarası, y grafiğin rengi.
         self.datas = { 
 
-            0 : (Limited_List(50, 1, none_item = 0), "Basınç", ("g", 0, 0)), 
-            1 : (Limited_List(50, 1, none_item = 0), "Pil Gerilimi", ("g", 0, 1)),
-            2 : (Limited_List(50, 1, none_item = 0), "Sıcaklık", ("g", 1, 0)),
-            3 : (Limited_List(50, 1, none_item = 0), "Yükseklik", ("g", 1, 1)),
+            0 : (Limited_List(50, 1, none_item = 0), "Basınç", ("g", 1, 'r')), 
+            1 : (Limited_List(50, 1, none_item = 0), "Pil Gerilimi", ("g", 1, 'b')),
+            2 : (Limited_List(50, 1, none_item = 0), "Sıcaklık", ("g", 2, 'purple')),
+            3 : (Limited_List(50, 1, none_item = 0), "Yükseklik", ("g", 2, 'orange')),
             4 : (0, "GPS Yüksekliği", (0, 1)),
             5 : (0, "Enlem", (0, 2)),
             6 : (0, "Boylam", (0, 3)),
@@ -241,7 +246,7 @@ Telemetri verilerinin görüntülendiği ekran.
     def reset_data(self, data_to_reset = None):
 
         """
-Aracın bağlantısı kopruğunda tüm verileri sıfırlayan fonksiyon.
+Aracın bağlantısı koptuğunda tüm verileri sıfırlayan fonksiyon.
         """
 
         data_to_reset = data_to_reset or range(self.data_count)
@@ -260,9 +265,13 @@ Aracın bağlantısı kopruğunda tüm verileri sıfırlayan fonksiyon.
 
 
 
-    def filter_data(self): ## self.filters ı check box lı bir popup ile güncelle
+    def filter_data(self):  self.filters ı check box lı bir popup ile güncelle
 
-        pass ## csv dosyasını güncellemeyi de ekle
+        csv dosyasını güncellemeyi de ekle
+
+        filters.sort()
+        csv.write(filters)
+        self.filters = filters
 
     def get_layout(self):
 
@@ -271,7 +280,7 @@ Aracın bağlantısı kopruğunda tüm verileri sıfırlayan fonksiyon.
         if vehicle is not None:
 
             self.__INTERVAL_of_GRAPHS = 50 ## the time from past to which the oldest data belongs 
-
+            self.interval = list(range(self.__INTERVAL_of_GRAPHS))
             
             self.horizontalGroupBox = QGroupBox("")
             layout = QGridLayout()
@@ -281,27 +290,9 @@ Aracın bağlantısı kopruğunda tüm verileri sıfırlayan fonksiyon.
             filter_button = PyQt5.QtWidgets.QPushButton("Filtrele")
             filter_button.clicked.connect(self.filter_data)
 
-            layout.addWidget(PyQt5.QtWidgets.QLabel("Paket Numarası: "), 0, 0)
-            layout.addWidget(PyQt5.QtWidgets.QLabel("Görev Zamanı: "), 1, 0)
-            layout.addWidget(PyQt5.QtWidgets.QLabel("Yükseklik: "), 2, 0)
-            layout.addWidget(PyQt5.QtWidgets.QLabel("Basınç: "), 3, 0)
-            layout.addWidget(PyQt5.QtWidgets.QLabel("Sıcaklık: "), 4, 0)
-            layout.addWidget(PyQt5.QtWidgets.QLabel("Pil Gerilimi: "), 5, 0)
-            layout.addWidget(PyQt5.QtWidgets.QLabel("Yükseklik(GPS): "), 6, 0)
             layout.addWidget(filter_button, 7, 0)
             layout.addWidget(self.canvas, 0, 2, 0, 7)
-
             
-
-
-            # BURADA self.veri_adı_label ve self.veri_adı değişkenleri olacak, self.veri_adı_label değişenine veri sürekli self.veri_adı değişkeninden gitcek
-            self.packet_num = layout.addWidget(PyQt5.QtWidgets.QLabel("32430"), 0,1)
-            self.mission_time = layout.addWidget(PyQt5.QtWidgets.QLabel("450 s"), 1,1)
-            self.height_sensor = layout.addWidget(PyQt5.QtWidgets.QLabel("330 m"), 2,1)
-            self.pressure = layout.addWidget(PyQt5.QtWidgets.QLabel("202 Pa"), 3,1)
-            self.temperature = layout.addWidget(PyQt5.QtWidgets.QLabel("011 °C"),4,1)
-            self.voltage = layout.addWidget(PyQt5.QtWidgets.QLabel("10 V"), 5,1)
-            self.height_gps = layout.addWidget(PyQt5.QtWidgets.QLabel("10 m"), 6,1)
 
             self.horizontalGroupBox.setLayout(layout)
 
@@ -316,16 +307,23 @@ Aracın bağlantısı kopruğunda tüm verileri sıfırlayan fonksiyon.
 
             return windowLayout
 
-            # self.show()
 
 
 
 
-        else:  # BURAYA CİHAZ BAĞLANMADI YAZISI EKLENECEK
+        else:  
+            
+            layout = QGridLayout()
 
-            pass
+            label = QLabel("Bağlı Cihaz Yok!")
 
-            return not coonected yazısının bulunduğu layout
+            label.setFont(QFont("Times", 70))
+
+            layout.addWidget(label, 1, 1)
+
+            self.layout = layout
+
+            return layout
 
 
 
@@ -336,22 +334,25 @@ Her belli zaman aralığında ekrandaki telemetri verilerini güncellemek için 
 Şu anda her 1 saniyede bir kez çağrılıyor.
         """
 
-        global vehicle
+        for i in range(self.data_count): ## removing old widgets
+            
+            self.layout.removeWidget(self.layout.itemAt(i + 2).widget) ## ilk iki olan filter button ve canvas dışındaki widgetlardan sonrakiler için i + 2 ile remove ediyoruz
 
 
-        # BURDA da değişkenklerin değerlerini değiştir ve kontrol et değişken değiştiğinde labeldaki değer de değişir mi diye değişmiyorsa ekstra değişken olayını
-        # boşver, label.settext vs de bak
-          
-
-        self.canvas.axes1.cla()  # Clear the canvas.
+        self.canvas.axes1.cla() ## clearing the canvas  
         self.canvas.axes2.cla()
-        self.canvas.axes1.plot(self.xdata, self.ydata[0], 'r', label="Sıcaklık")
-        self.canvas.axes1.plot(self.xdata, self.ydata[1], 'b', label="Pil Gerilimi")
 
-        self.canvas.axes2.plot(self.xdata, self.ydata[2], 'purple', label="Basınç")
-        self.canvas.axes2.plot(self.xdata, self.ydata[3], 'orange', label="Yükseklik")
+        for i in self.filters:
 
-        # HER BAŞARILI TELEMETRY DE MİSSİON TİME A 1 SANİYE, PAKET NUMARASINA packet_per_signal EKLE
+            if self.datas[i][0] == "g":
+                
+                ## plotting the graph
+                exec("self.canvas.axes" + str(self.datas[i][2][1]) + ".plot(self.interval, self.datas[i][0], self.datas[i][2][2], label = self.datas[i][1])")
+
+            else:
+
+                self.layout.addWidget(QLabel(self.datas[i][1] + str(self.datas[i][0])), *self.datas[i][2])
+                
 
         self.canvas.axes1.legend()
         self.canvas.axes2.legend()
@@ -364,9 +365,7 @@ Her belli zaman aralığında ekrandaki telemetri verilerini güncellemek için 
         self.canvas.axes2.set_xlabel("Zaman (saniye)")
         self.canvas.axes2.set_ylabel("Değer")
 
-        # diğer veriler için de yap
-
-        # Trigger the canvas to update and redraw.
+        
         self.canvas.draw()
 
     def update_variable_data(self):
@@ -385,7 +384,18 @@ Her belli zaman aralığında ekrandaki telemetri verilerini güncellemek için 
 
         self.datas[9] += 1
         
-        TAMAMLA
+        for i in range(self.data_count):
+
+            data = self.datas[i]
+
+            if data[2][0] == "g":
+                
+                self.datas[i][0].add(data[i])
+
+            else:
+
+                self.datas[i][0] = data[i]
+
 
     def update_data(self):
 
@@ -393,6 +403,6 @@ Her belli zaman aralığında ekrandaki telemetri verilerini güncellemek için 
 
         update_visual_data()
 
-
 class Map_Layout(QWidget):
+    
     pass
