@@ -60,7 +60,7 @@ args : Döndürülmesi talep edilen telemetri verilerin sırasıyla kodlarını 
 Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri verilerini tutan bir demet.
     """
 
-    args = args or tuple(range(8)) ## Eğer argüman girilmemişse tüm değerleri sırasıyla döndürecek şekilde demet atıyoruz.
+    args = args or tuple(range(7)) ## Eğer argüman girilmemişse tüm değerleri sırasıyla döndürecek şekilde demet atıyoruz.
     
     if len(set(args).intersection(set(range(8)))) != len(args):
         raise Exception("Geçersiz veri girişi.")
