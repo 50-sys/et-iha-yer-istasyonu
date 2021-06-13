@@ -7,7 +7,7 @@ from time import time
 from helper import *
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from PyQt5.QtWidgets import QGroupBox, QGridLayout, QLabel, QVBoxLayout, QWidget, QInputDialog, QMessageBox, QPushButton
+from PyQt5.QtWidgets import QAbstractButton, QCheckBox, QGroupBox, QGridLayout, QLabel, QVBoxLayout, QWidget, QInputDialog, QMessageBox, QPushButton
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QFont
 import PyQt5
@@ -200,8 +200,21 @@ Telemetri verilerinin görüntülendiği ekran.
 
         super(Telemetry_Layout, self).__init__(*args, **kwargs)
 
-        self.filters_database_name = os.getcwd() + "filters.csv" ## path of file that stores current filters for telemetry data
-        self.data_count = 9 ## count of telemetry data 
+        o_s = sys.platform
+
+        if "linux" in o_s:
+
+            self.filters_database_name = os.getcwd() + "/filters.csv" ## path of file that stores current filters for telemetry data
+
+        elif o_s == "win32":
+
+            self.filters_database_name = os.getcwd() + r"\filters.csv" ## path of file that stores current filters for telemetry data
+
+        else:
+
+            raise Exception("OS not supported!") 
+            
+         
 
         self.canvas = MplCanvas(self, width=5, height=4, dpi=100)
 
@@ -215,7 +228,7 @@ Telemetri verilerinin görüntülendiği ekran.
 
         except:
 
-            with open(self.filters_database_name, "w+") as file:
+            with open(self.filters_database_name, "w") as file:
 
                 file.write(",".join(list(range(self.data_count))))
                 
@@ -223,7 +236,7 @@ Telemetri verilerinin görüntülendiği ekran.
 
         ## tüm telemetri verilerinin kodları ve ayrıntılarını depolayan sözlük:
         ## class mantığında çalışıyor
-        ## demetin ilk elemanı değişkenin değeri, ikincisi ekranda gösterilecek ad, üçüncüsü de gui da konumu
+        ## demetin ilk elemanı değişkenin değeri, ikincisi ekranda gösterilecek ad, üçüncüsü de gui da durumu
         ## KONUMDA : (x, y) = x row, y column. ("g", x, y) = "g" = grafik, x grafik numarası, y grafiğin rengi.
         self.datas = { 
 
@@ -238,15 +251,17 @@ Telemetri verilerinin görüntülendiği ekran.
             8 : (0, "Görev Zamanı", (0, 5))
         }
 
-   
+        self.data_count = len(self.datas.keys()) ## count of telemetry data
 
+        self.__INTERVAL_of_GRAPHS = 50 ## time interval of the data displayed
+        self.interval = list(range(self.__INTERVAL_of_GRAPHS))
 
         self.layout = self.get_layout()
 
     def reset_data(self, data_to_reset = None):
 
         """
-Aracın bağlantısı koptuğunda tüm verileri sıfırlayan fonksiyon.
+Aracın bağlantısının kopması gibi durumlarda tüm verileri sıfırlayan fonksiyon.
         """
 
         data_to_reset = data_to_reset or range(self.data_count)
@@ -265,13 +280,43 @@ Aracın bağlantısı koptuğunda tüm verileri sıfırlayan fonksiyon.
 
 
 
-    def filter_data(self):  self.filters ı check box lı bir popup ile güncelle
+    def filter_data(self):
 
-        csv dosyasını güncellemeyi de ekle
+        message_box = QMessageBox()
 
+        check_boxes = []
+
+        filters = []
+        
+        for i in range(self.data_count):
+            
+            
+            check_box = QCheckBox(self.datas[i][1])
+
+            message_box.setCheckBox(check_box) 
+
+            if i in self.filters:
+
+                check_box.setChecked()
+
+            check_boxes.append(check_box)
+
+        ok_button = message_box.addButton(message_box.Ok)
+        ok_button.clicked.disconnect()
+
+        func = lambda : map((lambda a : filters.append(a) if check_boxes[a].isChecked() else 0), range(self.data_count)) ## creating the function to read data from all checkboxes and perform according to it
+        ok_button.clicked.connect(func) ## setting the function to read data from all checkboxes and perform according to it
+
+        
         filters.sort()
-        csv.write(filters)
+        
+        with open(self.filters_database_name, "w") as file:
+
+            file.write(",".join(filters))
+        
         self.filters = filters
+
+
 
     def get_layout(self):
 
@@ -279,8 +324,7 @@ Aracın bağlantısı koptuğunda tüm verileri sıfırlayan fonksiyon.
 
         if vehicle is not None:
 
-            self.__INTERVAL_of_GRAPHS = 50 ## the time from past to which the oldest data belongs 
-            self.interval = list(range(self.__INTERVAL_of_GRAPHS))
+
             
             self.horizontalGroupBox = QGroupBox("")
             layout = QGridLayout()
