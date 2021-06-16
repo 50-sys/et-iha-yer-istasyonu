@@ -3,8 +3,16 @@ Hata ayıklama gibi önemli yardımcı fonksiyonları tutan modül.
 """
 
 from datetime import datetime
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import qErrnoWarning
+from PyQt5.QtWidgets import QMessageBox, QWidget
 import os, sys
+
+
+def replace_widget(layout, old_widget : QWidget, new_widget : QWidget):
+
+    
+    layout.removeWidget(old_widget)
+    layout.addWidget(new_widget, )
 
 def exception_handling():
     pass   
@@ -105,7 +113,7 @@ Hatanın zamanı           : {time} \n\n
 
     return inner
 
-def error_popup(error : str, detailed_description : str):
+def error_popup(error : str, detailed_description : str = ""):
 
     popup = QMessageBox()
     popup.setText(error)
@@ -122,58 +130,56 @@ Eleman sayısı belli bir limiti geçmeyen özel bir liste.
 
 Parametreler:
 
-iterator : verileri depolayan konteyner
-limit : iterator değişkeninin tutabileceği maksimum eleman sayısı
-start_blank : true verilirse iteratordeki boş yerler None ile doldurulur
+container : verileri depolayan konteyner
+limit : container değişkeninin tutabileceği maksimum eleman sayısı
+start_blank : true verilirse containerdeki boş yerler None ile doldurulur
 none_item : boşlukların doldurulacağı nesne
-lean_to_left : true verilirse none_item olmayan değerleri sola yaslar
+lean_to_right : true verilirse none_item olmayan değerleri sola yaslar
 
     """
     
-    def __init__(self, limit : int, start_blank : bool, iterator = list(), none_item = None, lean_to_left = False):
+    def __init__(self, limit : int, start_blank : bool, container = list(), none_item = None, lean_to_right = False):
             
         if start_blank:
                 
-            self.iterator = list(iterator)
-
-        if len(self.iterator) == 0:
-
-            self.iterator = [none_item for x in range(limit)]
+            self.__container = list(container)
 
         else:
-                if lean_to_left:
+                if lean_to_right:
 
-                    self.iterator = [none_item for x in range(limit - len(iterator))] + list(iterator)
-
-
-                self.iterator = list(iterator) + [none_item for x in range(limit - len(iterator))]
+                    self.__container = [none_item for x in range(limit - len(container))] + list(container)
 
 
-        self.limit = limit
-        self.none_item = none_item
-        self.lean_to_left = lean_to_left
+                else:
+
+                    self.__container = list(container) + [none_item for x in range(limit - len(container))]
+
+
+        self.__limit = limit
+        self.__none_item = none_item
+        self.__lean_to_right = lean_to_right
 
     def __iter__(self):
 
-        self.current = 0
+        self.__current = 0
 
         return self
 
     def __len__(self):
 
-        return len(self.iterator)
+        return len(self.__container)
 
     def __next__(self):
 
-        if self.current <= len(self):
+        if self.__current <= len(self):
 
             raise StopIteration()
 
-        self.current += 1
+        self.__current += 1
         
         
 
-        return self.container[self.current - 1]
+        return self.container[self.__current - 1]
 
     
     def __getitem__(self, index : int):
@@ -182,17 +188,35 @@ lean_to_left : true verilirse none_item olmayan değerleri sola yaslar
 
     
     def add(self, item):
+        
+        if len(self.__container) == self.__limit:
 
-        self.iterator = [item] + self.iterator[1:]
+            if self.lean_to_right:
+
+                self.__container = [item] + self.__container[: -1]
+
+            else:
+
+                self.__container = self.__container[1 :] + [item]
+
+        else:
+
+            if self.__lean_to_right:
+
+                self.__container = [item] + self.container
+
+            else:
+
+                self.__container.append(item)
+
+        self.__container = [item] + self.__container[1:]
 
     def remove(self, item):
 
-        self.iterator.remove(item)
-        
-        if self.lean_to_left:
-            
-            self.iterator = [self.none_item] + self.iterator
+        self.__container.remove(item)
 
-        self.iterator.append(self.none_item)
+    def copy(self):
+
+        return Limited_List(self.____limit, self.____start_blank, self.__container, self.__none_item, self.__lean_to_left)
 
 

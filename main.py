@@ -11,7 +11,7 @@ from gui import *
 def main():
 
     app = QtWidgets.QApplication(sys.argv)
-    t_window = Telemetry_Window()
+    t_window = Window()
     t_window.show()
     sys.exit(app.exec_())
 
