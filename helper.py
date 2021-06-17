@@ -8,11 +8,10 @@ from PyQt5.QtWidgets import QMessageBox, QWidget
 import os, sys
 
 
-def replace_widget(layout, old_widget : QWidget, new_widget : QWidget):
+def replace_widget(layout, old_widget : QWidget, new_widget : QWidget, row : int, column : int):
 
-    
     layout.removeWidget(old_widget)
-    layout.addWidget(new_widget, )
+    layout.addWidget(new_widget, row, column)
 
 def exception_handling():
     pass   

@@ -70,13 +70,13 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
 
 
     codes = {
-        0 : basıncınkodu,
-        1 : pilgerilimininkodu,
-        2 : sıcaklığınkodu,
-        3 : yüksekliğinkodu,
-        4 : gpsyüksekliğininkodu,
-        5 : enleminkodu,
-        6 : boylamınkodu
+        0 : "basıncınkodu",
+        1 : "pilgerilimininkodu",
+        2 : "sıcaklığınkodu",
+        3 : "yüksekliğinkodu",
+        4 : "gpsyüksekliğininkodu",
+        5 : "enleminkodu",
+        6 : "boylamınkodu"
     }
 
     results = []

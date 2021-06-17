@@ -541,9 +541,20 @@ mode : arm or disarm
         telemetry_button = QPushButton("Telemetri Verileri")
         map_button = QPushButton("Harita")
 
+        layout.addWidget(connect_button, 0, 0)
+        layout.addWidget(arm_disarm_button, 0, 1)
+        layout.addWidget(switch_failsafe_button, 0, 2)
+        layout.addWidget(change_flight_mode_button, 0, 3)
+        layout.addWidget(telemetry_button, 0, 4)
+        layout.addWidget(map_button, 0, 5)
+
+        layout.addWidget(QLabel("İşlemlerinize başlamak için yukarıdaki butonlardan birine tıklayın."), 1, 0)
+
+
         connect_button.clicked.connect(lambda : self.connect_to_vehicle_gui(connect_button))
         arm_disarm_button.clicked.connect(lambda : self.arm_disarm_gui(vehicle, get_arm_disarm_parameter(vehicle), arm_disarm_button))
         switch_failsafe_button.clicked.connect(lambda : self.switch_failsafe_gui(vehicle, get_switch_failsafe_parameter(vehicle), switch_failsafe_button))
         change_flight_mode_button.clicked.connect(lambda : self.change_flight_mode_gui(vehicle, get_change_flight_mode_parameter(), change_flight_mode_button))
+        telemetry_button.clicked.connect(lambda : replace_widget(layout, layout.itemAt(7).widget(), self.telemetry_layout, 1, 0))
+        map_button.clicked.connect(lambda : replace_widget(layout, layout.itemAt(7).widget(), self.map_layout, 1, 0))
 
-        telemetry windowı alta yerleştirme vs ayarla
