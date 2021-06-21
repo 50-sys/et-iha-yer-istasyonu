@@ -1,5 +1,5 @@
 """
-İHA ile iletişimi sağlayan araçları barındıran modül.
+Araç ile iletişimi sağlayan araçları barındıran modül.
 """
 
 from helper import exception_handling
@@ -9,11 +9,14 @@ from pymavlink import mavutil
 
 class Vehicle:
 
-    def __init__(self, vehicle, fligt_mode : str, is_armed : bool):
+    def __init__(self, vehicle, fligt_mode : str = None, is_armed : bool = False, is_fail_safe : bool = False):
 
         self.vehicle = vehicle   
         self.fligt_mode = fligt_mode
         self.is_armed = is_armed
+        self.is_failsafe = is_fail_safe
+
+        ## direk burada false ve none değerleri atanabilirdi fakat kostumizasyon gerekbilir.
 
 @exception_handling
 def connect_to_vehicle(connection_string : str):
@@ -80,7 +83,7 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
 
     for i in args:
 
-        data = vehicle.messages[codes[i]].alt
+        data = vehicle.vehicle.messages[codes[i]].alt
 
         if not data:
             
@@ -98,17 +101,25 @@ https://docs.px4.io/master/en/companion_computer/pixhawk_companion.html
 https://ardupilot.org/dev/docs/raspberry-pi-via-mavlink.html
 """
 
+CHANGE LERİ DİREK BURADAKİ FONKSİYONLARDA YAP
 
+
+vehicle.flight_mode = mode bunu da ayarla bunalarda
 
 @exception_handling
-def switch_fail_safe(vehicle): ## global drone belirt 
+def switch_failsafe(vehicle, on_or_off : str): ## global drone belirt 
+    if mode == on
     pass
 
 @exception_handling
 def change_flight_mode(vehicle, mode : str): ## global drone belirt 
+    """
+mode : mode name
+    """
     pass
 
 @exception_handling
-def arm_disarm(vehicle): ## global drone belirt 
+def arm_disarm(vehicle, mode : str): ## global drone belirt 
+    if mode == arm:
     pass
 
