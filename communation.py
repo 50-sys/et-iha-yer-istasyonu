@@ -31,6 +31,19 @@ def disconnect_from_vehicle():
 
     return None
 
+def request_telemetry_data(vehicle, data):
+    
+    """
+        basınç : "basıncınkodu",
+        pil gerilimi : "pilgerilimininkodu",
+        sıcaklık : "sıcaklığınkodu",
+        yükseklik : "yüksekliğinkodu",
+        gps yüksekliği : "gpsyüksekliğininkodu",
+        enlem : "enleminkodu",
+        boylam : "boylamınkodu"
+    """
+
+
 
 @exception_handling
 def get_telemetry_data(vehicle, *args):
@@ -55,7 +68,7 @@ Telemetri Verilerinin Kodları:
 
 
 Parametreler:
-
+ 
 vehicle : Telemetri verisi alınacak araç. 
 args : Döndürülmesi talep edilen telemetri verilerin sırasıyla kodlarını tutan ve tüm elemanları integer veri tipinden olan bir demet.
 
@@ -70,20 +83,20 @@ Döndürür: Args parametresinde sırasına göre kodları verilmiş telemetri v
 
 
     codes = {
-        0 : basıncınkodu,
-        1 : pilgerilimininkodu,
-        2 : sıcaklığınkodu,
-        3 : yüksekliğinkodu,
-        4 : gpsyüksekliğininkodu,
-        5 : enleminkodu,
-        6 : boylamınkodu
+        0 : "basıncınkodu",
+        1 : "pilgerilimininkodu",
+        2 : "sıcaklığınkodu",
+        3 : "yüksekliğinkodu",
+        4 : "gpsyüksekliğininkodu",
+        5 : "enleminkodu",
+        6 : "boylamınkodu"
     }
 
     results = []
 
     for i in args:
 
-        data = vehicle.vehicle.messages[codes[i]].alt
+        data = request_telemetry_data(vehicle, i)
 
         if not data:
             

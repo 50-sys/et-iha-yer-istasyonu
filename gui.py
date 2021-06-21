@@ -66,6 +66,7 @@ Telemetri verilerinin görüntülendiği ekran.
 
         self.__INTERVAL_of_GRAPHS = 50  # time interval of the data displayed
         self.interval = list(range(self.__INTERVAL_of_GRAPHS))
+        self.template_for_y_values = Limited_List(self.__INTERVAL_of_GRAPHS, False, none_item=0) ## limited list template which will be copied to graph initliazion datas
 
         # tüm telemetri verilerinin kodları ve ayrıntılarını depolayan sözlük:
         # class mantığında çalışıyor
@@ -73,10 +74,10 @@ Telemetri verilerinin görüntülendiği ekran.
         # DURUMDA : (x, y) = x row, y column. ("g", x, y) = "g" = grafik, x grafik numarası, y grafiğin rengi.
         self.datas = {
 
-            0: (Limited_List(self.__INTERVAL_of_GRAPHS, 1, none_item=0), "Basınç", ("g", 1, 'r')),
-            1: (Limited_List(self.__INTERVAL_of_GRAPHS, 1, none_item=0), "Pil Gerilimi", ("g", 1, 'b')),
-            2: (Limited_List(self.__INTERVAL_of_GRAPHS, 1, none_item=0), "Sıcaklık", ("g", 2, 'purple')),
-            3: (Limited_List(self.__INTERVAL_of_GRAPHS, 1, none_item=0), "Yükseklik", ("g", 2, 'orange')),
+            0: (self.template_for_y_values.copy(), "Basınç", ("g", 1, 'r')),
+            1: (self.template_for_y_values.copy(), "Pil Gerilimi", ("g", 1, 'b')),
+            2: (self.template_for_y_values.copy(), "Sıcaklık", ("g", 2, 'purple')),
+            3: (self.template_for_y_values.copy(), "Yükseklik", ("g", 2, 'orange')),
             4: (0, "GPS Yüksekliği", (0, 1)),
             5: (0, "Enlem", (0, 2)),
             6: (0, "Boylam", (0, 3)),
@@ -540,9 +541,20 @@ mode : arm or disarm
         telemetry_button = QPushButton("Telemetri Verileri")
         map_button = QPushButton("Harita")
 
+        layout.addWidget(connect_button, 0, 0)
+        layout.addWidget(arm_disarm_button, 0, 1)
+        layout.addWidget(switch_failsafe_button, 0, 2)
+        layout.addWidget(change_flight_mode_button, 0, 3)
+        layout.addWidget(telemetry_button, 0, 4)
+        layout.addWidget(map_button, 0, 5)
+
+        layout.addWidget(QLabel("İşlemlerinize başlamak için yukarıdaki butonlardan birine tıklayın."), 1, 0)
+
+
         connect_button.clicked.connect(lambda : self.connect_to_vehicle_gui(connect_button))
         arm_disarm_button.clicked.connect(lambda : self.arm_disarm_gui(vehicle, get_arm_disarm_parameter(vehicle), arm_disarm_button))
         switch_failsafe_button.clicked.connect(lambda : self.switch_failsafe_gui(vehicle, get_switch_failsafe_parameter(vehicle), switch_failsafe_button))
         change_flight_mode_button.clicked.connect(lambda : self.change_flight_mode_gui(vehicle, get_change_flight_mode_parameter(), change_flight_mode_button))
+        telemetry_button.clicked.connect(lambda : replace_widget(layout, layout.itemAt(7).widget(), self.telemetry_layout, 1, 0))
+        map_button.clicked.connect(lambda : replace_widget(layout, layout.itemAt(7).widget(), self.map_layout, 1, 0))
 
-        telemetry windowı alta yerleştirme vs ayarla
