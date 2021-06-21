@@ -1,6 +1,11 @@
 """
 Ana modül.
 """
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
 
 import sys
 from PyQt5 import QtWidgets
@@ -18,3 +23,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
